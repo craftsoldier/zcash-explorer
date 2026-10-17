@@ -1,9 +1,9 @@
 defmodule ZcashExplorerWeb.RawMempoolLive do
   use ZcashExplorerWeb, :live_view
-  import Phoenix.LiveView.Helpers
+  import Phoenix.Component
   @impl true
   def render(assigns) do
-    ~L"""
+    ~H"""
     <div class="shadow overflow-hidden border-gray-200 rounded-lg overflow-x-auto">
     <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
       <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -19,7 +19,7 @@ defmodule ZcashExplorerWeb.RawMempoolLive do
        <%= for tx <- @raw_mempool do %>
         <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-indigo-600 hover:text-indigo-500 animate-pulse dark:text-white dark:hover:text-white">
-          <a href='/transactions/<%= tx["txid"] %>'>
+          <a href={"/transactions/#{tx["txid"]}"}>
                <%= tx["txid"] %>
           </a>
         </td>
@@ -47,19 +47,14 @@ defmodule ZcashExplorerWeb.RawMempoolLive do
   def mount(_params, _session, socket) do
     if connected?(socket), do: Process.send_after(self(), :update, 5000)
 
-    case Cachex.get(:app_cache, "raw_mempool") do
-      {:ok, mempool} ->
-        {:ok, assign(socket, :raw_mempool, mempool)}
-
-      {:error, _reason} ->
-        {:ok, assign(socket, :raw_mempool, "loading...")}
-    end
+    {:ok, mempool} = Cachex.get(:app_cache, "raw_mempool")
+    {:ok, assign(socket, :raw_mempool, mempool || [])}
   end
 
   @impl true
   def handle_info(:update, socket) do
     Process.send_after(self(), :update, 5000)
     {:ok, mempool} = Cachex.get(:app_cache, "raw_mempool")
-    {:noreply, assign(socket, :raw_mempool, mempool)}
+    {:noreply, assign(socket, :raw_mempool, mempool || [])}
   end
 end

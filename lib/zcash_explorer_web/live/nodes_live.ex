@@ -1,9 +1,9 @@
 defmodule ZcashExplorerWeb.NodesLive do
   use ZcashExplorerWeb, :live_view
-  import Phoenix.LiveView.Helpers
+  import Phoenix.Component
   @impl true
   def render(assigns) do
-    ~L"""
+    ~H"""
     <div class="shadow overflow-hidden border-gray-200 rounded-lg overflow-x-auto">
     <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
       <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -37,19 +37,14 @@ defmodule ZcashExplorerWeb.NodesLive do
   def mount(_params, _session, socket) do
     if connected?(socket), do: Process.send_after(self(), :update, 5000)
 
-    case Cachex.get(:app_cache, "zcash_nodes") do
-      {:ok, zcash_nodes} ->
-        {:ok, assign(socket, :zcash_nodes, zcash_nodes)}
-
-      {:error, _reason} ->
-        {:ok, assign(socket, :zcash_nodes, "loading...")}
-    end
+    {:ok, zcash_nodes} = Cachex.get(:app_cache, "zcash_nodes")
+    {:ok, assign(socket, :zcash_nodes, zcash_nodes || [])}
   end
 
   @impl true
   def handle_info(:update, socket) do
     Process.send_after(self(), :update, 5000)
     {:ok, zcash_nodes} = Cachex.get(:app_cache, "zcash_nodes")
-    {:noreply, assign(socket, :zcash_nodes, zcash_nodes)}
+    {:noreply, assign(socket, :zcash_nodes, zcash_nodes || [])}
   end
 end

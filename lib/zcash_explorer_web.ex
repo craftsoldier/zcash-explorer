@@ -19,7 +19,8 @@ defmodule ZcashExplorerWeb do
 
   def controller do
     quote do
-      use Phoenix.Controller, namespace: ZcashExplorerWeb
+      use Phoenix.Controller, formats: [html: "View", json: "View"]
+      plug :put_layout, html: {ZcashExplorerWeb.LayoutView, :app}
       import Phoenix.LiveView.Controller
       import Plug.Conn
       import ZcashExplorerWeb.Gettext
@@ -38,7 +39,7 @@ defmodule ZcashExplorerWeb do
       import Phoenix.Controller,
         only: [get_flash: 1, get_flash: 2, view_module: 1, view_template: 1]
 
-      import Phoenix.LiveView.Helpers
+      import Phoenix.Component
 
       # Include shared imports and aliases for views
       unquote(view_helpers())
@@ -65,7 +66,7 @@ defmodule ZcashExplorerWeb do
   def live_view do
     quote do
       use Phoenix.LiveView,
-        layout: {ZcashExplorerWeb.LayoutView, "live.html"}
+        layout: {ZcashExplorerWeb.LayoutView, :live}
 
       unquote(view_helpers())
     end
@@ -82,14 +83,16 @@ defmodule ZcashExplorerWeb do
   defp view_helpers do
     quote do
       # Use all HTML functionality (forms, tags, etc)
-      use Phoenix.HTML
+      import Phoenix.HTML
+      import Phoenix.HTML.Form
+      use PhoenixHTMLHelpers
 
       # Import basic rendering functionality (render, render_layout, etc)
       import Phoenix.View
 
       import ZcashExplorerWeb.ErrorHelpers
       import ZcashExplorerWeb.Gettext
-      import Phoenix.LiveView.Helpers
+      import Phoenix.Component
 
       alias ZcashExplorerWeb.Router.Helpers, as: Routes
     end

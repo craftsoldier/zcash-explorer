@@ -80,10 +80,10 @@ defmodule ZcashExplorerWeb.PageController do
   def vk(conn, _params) do
     height =
       case Cachex.get(:app_cache, "metrics") do
-        {:ok, info} ->
+        {:ok, info} when not is_nil(info) ->
           info["blocks"] - 10000
 
-        {:error, _reason} ->
+        _ ->
           # hardcoded to canopy
           1_046_400
       end

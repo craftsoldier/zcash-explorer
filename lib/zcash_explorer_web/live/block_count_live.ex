@@ -1,10 +1,10 @@
 defmodule ZcashExplorerWeb.BlockCountLive do
   use ZcashExplorerWeb, :live_view
-  import Phoenix.LiveView.Helpers
+  import Phoenix.Component
 
   @impl true
   def render(assigns) do
-    ~L"""
+    ~H"""
     <p class="text-2xl font-semibold text-gray-900 dark:dark:bg-slate-800 dark:text-slate-100">
     <%= @block_count %>
     </p>
@@ -16,10 +16,10 @@ defmodule ZcashExplorerWeb.BlockCountLive do
     if connected?(socket), do: Process.send_after(self(), :update, 15000)
 
     case Cachex.get(:app_cache, "metrics") do
-      {:ok, info} ->
+      {:ok, info} when not is_nil(info) ->
         {:ok, assign(socket, :block_count, info["blocks"])}
 
-      {:error, _reason} ->
+      _ ->
         {:ok, assign(socket, :block_count, "loading...")}
     end
   end

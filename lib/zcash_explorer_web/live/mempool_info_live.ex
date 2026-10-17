@@ -1,9 +1,9 @@
 defmodule ZcashExplorerWeb.MempoolInfoLive do
   use ZcashExplorerWeb, :live_view
-  import Phoenix.LiveView.Helpers
+  import Phoenix.Component
   @impl true
   def render(assigns) do
-    ~L"""
+    ~H"""
     <p class="text-2xl font-semibold text-gray-900 dark:dark:bg-slate-800 dark:text-slate-100">
     <%= @mempool_info %>
     </p>
@@ -15,10 +15,10 @@ defmodule ZcashExplorerWeb.MempoolInfoLive do
     if connected?(socket), do: Process.send_after(self(), :update, 1000)
 
     case Cachex.get(:app_cache, "mempool_info") do
-      {:ok, info} ->
+      {:ok, info} when not is_nil(info) ->
         {:ok, assign(socket, :mempool_info, info["size"])}
 
-      {:error, _reason} ->
+      _ ->
         {:ok, assign(socket, :mempool_info, "loading...")}
     end
   end

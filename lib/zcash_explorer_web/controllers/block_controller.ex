@@ -29,9 +29,8 @@ defmodule ZcashExplorerWeb.BlockController do
 
   def index(conn, %{"date" => date}) do
     max_concurrency = System.schedulers_online() * 2
-    now = NaiveDateTime.utc_now() |> Timex.beginning_of_day()
-    parsed_date = Timex.parse!(date, "{YYYY}-{0M}-{D}")
-    diff = Timex.diff(parsed_date, now, :day)
+    parsed_date = Date.from_iso8601!(date)
+    diff = Date.diff(parsed_date, Date.utc_today())
 
     if diff > 0 do
       conn
@@ -40,16 +39,15 @@ defmodule ZcashExplorerWeb.BlockController do
       |> render(:invalid_input)
     end
 
-    previous = Timex.shift(parsed_date, days: -1) |> Timex.format!("{YYYY}-{0M}-{D}")
-    next = Timex.shift(parsed_date, days: 1) |> Timex.format!("{YYYY}-{0M}-{D}")
+    previous = parsed_date |> Date.add(-1) |> Date.to_iso8601()
+    next = parsed_date |> Date.add(1) |> Date.to_iso8601()
     first_block_date = "2016-10-28"
     disable_previous = if first_block_date == date, do: true, else: false
 
-    disable_next =
-      if Timex.today() |> Timex.format!("{YYYY}-{0M}-{D}") == date, do: true, else: false
+    disable_next = if Date.utc_today() |> Date.to_iso8601() == date, do: true, else: false
 
-    high = parsed_date |> Timex.end_of_day() |> Timex.to_unix()
-    low = parsed_date |> Timex.beginning_of_day() |> Timex.to_unix()
+    high = unix_end_of_day(parsed_date)
+    low = unix_start_of_day(parsed_date)
 
     case Zcashex.getblockhashes(high, low, true, false) do
       {:ok, blocks} ->
@@ -79,12 +77,12 @@ defmodule ZcashExplorerWeb.BlockController do
 
   def index(conn, _params) do
     max_concurrency = System.schedulers_online() * 2
-    today = Timex.today()
+    today = Date.utc_today()
     high = DateTime.utc_now() |> DateTime.to_unix()
-    low = DateTime.utc_now() |> Timex.beginning_of_day() |> Timex.to_unix()
+    low = unix_start_of_day(today)
     disable_next = true
     disable_previous = false
-    previous = Timex.shift(today, days: -1)
+    previous = Date.add(today, -1)
 
     case Zcashex.getblockhashes(high, low, true, false) do
       {:ok, blocks} ->
@@ -107,5 +105,13 @@ defmodule ZcashExplorerWeb.BlockController do
           page_title: "Zcash latest blocks"
         )
     end
+  end
+
+  defp unix_start_of_day(date) do
+    date |> DateTime.new!(~T[00:00:00], "Etc/UTC") |> DateTime.to_unix()
+  end
+
+  defp unix_end_of_day(date) do
+    date |> DateTime.new!(~T[23:59:59], "Etc/UTC") |> DateTime.to_unix()
   end
 end
