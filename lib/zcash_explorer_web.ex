@@ -38,7 +38,8 @@ defmodule ZcashExplorerWeb do
       import Phoenix.Controller,
         only: [get_flash: 1, get_flash: 2, view_module: 1, view_template: 1]
 
-      import Phoenix.LiveView.Helpers
+      import Phoenix.Component
+      import Phoenix.LiveView.Helpers, only: [live_title_tag: 1, live_title_tag: 2]
 
       # Include shared imports and aliases for views
       unquote(view_helpers())
@@ -89,7 +90,8 @@ defmodule ZcashExplorerWeb do
 
       import ZcashExplorerWeb.ErrorHelpers
       import ZcashExplorerWeb.Gettext
-      import Phoenix.LiveView.Helpers
+      import Phoenix.Component
+      import Phoenix.LiveView.Helpers, only: [live_title_tag: 1, live_title_tag: 2]
 
       alias ZcashExplorerWeb.Router.Helpers, as: Routes
     end
