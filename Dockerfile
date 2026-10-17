@@ -1,4 +1,4 @@
-FROM elixir:1.14.4-alpine AS build
+FROM elixir:1.18.3-alpine AS build
 
 # install build dependencies
 RUN apk add --update --no-cache build-base --update nodejs npm git
