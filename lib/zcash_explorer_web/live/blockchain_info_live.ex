@@ -1,11 +1,11 @@
 defmodule ZcashExplorerWeb.BlockChainInfoLive do
   use ZcashExplorerWeb, :live_view
-  import Phoenix.LiveView.Helpers
+  import Phoenix.Component
   @impl true
   def render(assigns) do
     currency = if(assigns.blockchain_info["chain"] == "main", do: "ZEC", else: "TAZ")
 
-    ~L"""
+    ~H"""
     <div>
     <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
     <div class="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6 dark:bg-gray-800">

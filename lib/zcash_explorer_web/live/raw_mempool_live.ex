@@ -1,9 +1,9 @@
 defmodule ZcashExplorerWeb.RawMempoolLive do
   use ZcashExplorerWeb, :live_view
-  import Phoenix.LiveView.Helpers
+  import Phoenix.Component
   @impl true
   def render(assigns) do
-    ~L"""
+    ~H"""
     <div class="shadow overflow-hidden border-gray-200 rounded-lg overflow-x-auto">
     <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
       <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -19,7 +19,7 @@ defmodule ZcashExplorerWeb.RawMempoolLive do
        <%= for tx <- @raw_mempool do %>
         <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-indigo-600 hover:text-indigo-500 animate-pulse dark:text-white dark:hover:text-white">
-          <a href='/transactions/<%= tx["txid"] %>'>
+          <a href={"/transactions/#{tx["txid"]}"}>
                <%= tx["txid"] %>
           </a>
         </td>

@@ -1,11 +1,11 @@
 defmodule ZcashExplorerWeb.OrchardPoolLive do
   use ZcashExplorerWeb, :live_view
-  import Phoenix.LiveView.Helpers
+  import Phoenix.Component
   @impl true
   def render(assigns) do
     currency = if(assigns.blockchain_info["chain"] == "main", do: "ZEC", else: "TAZ")
 
-    ~L"""
+    ~H"""
     <p class="text-2xl font-semibold text-gray-900 dark:dark:bg-slate-800 dark:text-slate-100">
     <%= orchard_value(@blockchain_info["valuePools"]) %> <%= currency %>
     </p>

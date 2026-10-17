@@ -1,9 +1,9 @@
 defmodule ZcashExplorerWeb.VkLive do
   use ZcashExplorerWeb, :live_view
-  import Phoenix.LiveView.Helpers
+  import Phoenix.Component
   @impl true
   def render(%{message: %{"txs" => []}} = assigns) do
-    ~L"""
+    ~H"""
     <div id="clogsholder" class="text-green-400 font-mono break-all overscroll-auto overflow-auto mx-16 h-28  min-h-full border-solid  rounded-md border-opacity-25 shadow-inner border-4 border-light-blue-500 " phx-hook="VkContainerLog">
     <div id="clogs min-h-full">
     <%= @message["message"] %>
@@ -14,7 +14,7 @@ defmodule ZcashExplorerWeb.VkLive do
 
   @impl true
   def render(assigns) do
-    ~L"""
+    ~H"""
     <%= if length(@message["txs"]) > 0  do %>
     <div class="shadow overflow-hidden border-b border-gray-200 rounded-lg overflow-x-auto">
     <table class="min-w-full divide-y divide-gray-200">
@@ -31,7 +31,7 @@ defmodule ZcashExplorerWeb.VkLive do
     <%= for tx <- @message["txs"] do %>
     <tr class="hover:bg-indigo-50">
      <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-indigo-600 hover:text-indigo-500">
-        <a href='/transactions/<%= tx["txid"] %>' target="_blank">
+        <a href={"/transactions/#{tx["txid"]}"} target="_blank">
         <%= tx["txid"] %>
         </a>
     </td>
@@ -51,6 +51,7 @@ defmodule ZcashExplorerWeb.VkLive do
     <% end %>
      </tbody>
     </table>
+    </div>
     <% end %>
     """
   end
