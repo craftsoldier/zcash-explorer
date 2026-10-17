@@ -19,7 +19,8 @@ defmodule ZcashExplorerWeb do
 
   def controller do
     quote do
-      use Phoenix.Controller, namespace: ZcashExplorerWeb
+      use Phoenix.Controller, formats: [html: "View", json: "View"]
+      plug :put_layout, html: {ZcashExplorerWeb.LayoutView, :app}
       import Phoenix.LiveView.Controller
       import Plug.Conn
       import ZcashExplorerWeb.Gettext
