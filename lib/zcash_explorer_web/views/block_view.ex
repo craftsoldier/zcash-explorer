@@ -118,15 +118,21 @@ defmodule ZcashExplorerWeb.BlockView do
     end
   end
 
+  # Some nodes omit the value of transparent inputs, so the total is unknown then.
   def input_total(txs) do
-    [hd | tail] = txs
+    [_hd | tail] = txs
 
-    tail
-    |> Enum.map(fn x -> Map.get(x, :vin) end)
-    |> List.flatten()
-    |> Enum.reduce(0, fn x, acc -> Map.get(x, :value) + acc end)
-    |> Kernel.+(0.0)
-    |> :erlang.float_to_binary([:compact, {:decimals, 10}])
+    values =
+      tail
+      |> Enum.map(fn x -> Map.get(x, :vin) end)
+      |> List.flatten()
+      |> Enum.map(fn x -> Map.get(x, :value) end)
+
+    if Enum.any?(values, &is_nil/1) do
+      "unknown"
+    else
+      values |> Enum.sum() |> Kernel.+(0.0) |> :erlang.float_to_binary([:compact, {:decimals, 10}])
+    end
   end
 
   def output_total(txs) do
