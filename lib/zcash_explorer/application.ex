@@ -16,18 +16,6 @@ defmodule ZcashExplorer.Application do
       {Phoenix.PubSub, name: ZcashExplorer.PubSub},
       # Start the Endpoint (http/https)
       ZcashExplorerWeb.Endpoint,
-      # Start a worker by calling: ZcashExplorer.Worker.start_link(arg)
-      %{
-        id: Zcashex,
-        start:
-          {Zcashex, :start_link,
-           [
-             Application.get_env(:zcash_explorer, Zcashex)[:zcashd_hostname],
-             String.to_integer(Application.get_env(:zcash_explorer, Zcashex)[:zcashd_port]),
-             Application.get_env(:zcash_explorer, Zcashex)[:zcashd_username],
-             Application.get_env(:zcash_explorer, Zcashex)[:zcashd_password]
-           ]}
-      },
       {Cachex,
        name: :app_cache,
        warmers: [

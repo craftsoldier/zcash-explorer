@@ -20,3 +20,12 @@ config :zcash_explorer, ZcashExplorerWeb.Endpoint,
 
 # Print only warnings and errors during test
 config :logger, level: :warn
+
+# Node settings the app reads at boot. Tests run without a node, so the
+# warmers log "node unreachable" and carry on.
+config :zcash_explorer, Zcashex,
+  zcashd_hostname: "localhost",
+  zcashd_port: "8232",
+  zcashd_username: "test",
+  zcashd_password: "test",
+  zcash_network: "testnet"
