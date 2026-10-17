@@ -53,7 +53,6 @@ defmodule ZcashExplorer.MixProject do
       {:cachex, "~> 4.0"},
       {:phoenix_live_view, "~> 1.2.12"},
       {:floki, ">= 0.27.0", only: :test},
-      {:timex, "~> 3.0"},
       {:sizeable, "~> 1.0"},
       {:eqrcode, "~> 0.2"},
       {:contex, "~> 0.5.0"},
