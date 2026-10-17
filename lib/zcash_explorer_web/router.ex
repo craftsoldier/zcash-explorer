@@ -21,7 +21,6 @@ defmodule ZcashExplorerWeb.Router do
     get "/", PageController, :index
     get "/blocks/:hash", BlockController, :get_block
     get "/transactions/:txid", TransactionController, :get_transaction
-    live "/price", PriceLive
     live "/metrics/difficulty", DifficultyLive
     live "/metrics/block_count", BlockCountLive
     live "/metrics/blockchain_size", BlockChainSizeLive
