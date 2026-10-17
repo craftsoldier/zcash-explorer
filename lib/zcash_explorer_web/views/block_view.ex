@@ -7,18 +7,56 @@ defmodule ZcashExplorerWeb.BlockView do
   end
 
   def mined_time(timestamp) do
-    abs = timestamp |> Timex.from_unix() |> Timex.format!("{ISOdate} {ISOtime}")
-    rel = timestamp |> Timex.from_unix() |> Timex.format!("{relative}", :relative)
+    abs = absolute_time(timestamp)
+    rel = relative_time(timestamp)
     abs <> " " <> "(#{rel})"
   end
 
   def mined_time_without_rel(timestamp) do
-    timestamp |> Timex.from_unix() |> Timex.format!("{ISOdate} {ISOtime}")
+    absolute_time(timestamp)
   end
 
   def mined_time_rel(timestamp) do
-    timestamp |> Timex.from_unix() |> Timex.format!("{relative}", :relative)
+    relative_time(timestamp)
   end
+
+  defp absolute_time(timestamp) do
+    timestamp |> DateTime.from_unix!() |> Calendar.strftime("%Y-%m-%d %H:%M:%S")
+  end
+
+  # Same wording and thresholds as Timex's {relative} format, so the page text is unchanged.
+  defp relative_time(timestamp) do
+    now_us = DateTime.to_unix(DateTime.utc_now(), :microsecond)
+    timestamp * 1_000_000 - now_us |> div(1_000_000) |> relative_phrase()
+  end
+
+  defp relative_phrase(0), do: "now"
+  defp relative_phrase(s) when s > 0 and s <= 45, do: "in #{s} #{plural("second", s)}"
+  defp relative_phrase(s) when s > 45 and s < 120, do: "in 1 minute"
+  defp relative_phrase(s) when s >= 120 and s < 3600, do: "in #{div(s, 60)} minutes"
+  defp relative_phrase(s) when s >= 3600 and s < 7200, do: "in 1 hour"
+  defp relative_phrase(s) when s >= 7200 and s < 86_400, do: "in #{div(s, 3600)} hours"
+  defp relative_phrase(s) when s >= 86_400 and s < 172_800, do: "tomorrow"
+  defp relative_phrase(s) when s >= 172_800 and s < 2_592_000, do: "in #{div(s, 86_400)} days"
+  defp relative_phrase(s) when s >= 2_592_000 and s < 5_184_000, do: "in 1 month"
+  defp relative_phrase(s) when s >= 5_184_000 and s < 31_104_000, do: "in #{div(s, 2_592_000)} months"
+  defp relative_phrase(s) when s >= 31_104_000 and s < 62_208_000, do: "in 1 year"
+  defp relative_phrase(s) when s >= 62_208_000, do: "in #{div(s, 31_104_000)} years"
+
+  defp relative_phrase(s) when s < 0 and s >= -45, do: "#{-s} #{plural("second", -s)} ago"
+  defp relative_phrase(s) when s < -45 and s > -120, do: "1 minute ago"
+  defp relative_phrase(s) when s <= -120 and s > -3600, do: "#{div(-s, 60)} minutes ago"
+  defp relative_phrase(s) when s <= -3600 and s > -7200, do: "1 hour ago"
+  defp relative_phrase(s) when s <= -7200 and s > -86_400, do: "#{div(-s, 3600)} hours ago"
+  defp relative_phrase(s) when s <= -86_400 and s > -172_800, do: "yesterday"
+  defp relative_phrase(s) when s <= -172_800 and s > -2_592_000, do: "#{div(-s, 86_400)} days ago"
+  defp relative_phrase(s) when s <= -2_592_000 and s > -5_184_000, do: "1 month ago"
+  defp relative_phrase(s) when s <= -5_184_000 and s > -31_104_000, do: "#{div(-s, 2_592_000)} months ago"
+  defp relative_phrase(s) when s <= -31_104_000 and s > -62_208_000, do: "1 year ago"
+  defp relative_phrase(s) when s <= -62_208_000, do: "#{div(-s, 31_104_000)} years ago"
+
+  defp plural(word, 1), do: word
+  defp plural(word, _count), do: word <> "s"
 
   def transaction_count(txs) do
     txs |> length
