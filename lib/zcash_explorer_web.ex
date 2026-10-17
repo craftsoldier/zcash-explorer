@@ -66,7 +66,7 @@ defmodule ZcashExplorerWeb do
   def live_view do
     quote do
       use Phoenix.LiveView,
-        layout: {ZcashExplorerWeb.LayoutView, "live.html"}
+        layout: {ZcashExplorerWeb.LayoutView, :live}
 
       unquote(view_helpers())
     end
