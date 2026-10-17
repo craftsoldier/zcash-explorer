@@ -3,8 +3,6 @@ defmodule ZcashExplorerWeb.BlockChainInfoLive do
   import Phoenix.Component
   @impl true
   def render(assigns) do
-    currency = if(assigns.blockchain_info["chain"] == "main", do: "ZEC", else: "TAZ")
-
     ~H"""
     <%= if @blockchain_info do %>
     <div>
@@ -41,7 +39,7 @@ defmodule ZcashExplorerWeb.BlockChainInfoLive do
         Sprout pool
       </dt>
       <dd class="mt-1 text-3xl font-semibold text-gray-900 dark:text-white">
-          <%= sprout_value(@blockchain_info["valuePools"]) %> <%= currency %>
+          <%= sprout_value(@blockchain_info["valuePools"]) %> <%= currency(@blockchain_info) %>
       </dd>
     </div>
 
@@ -50,7 +48,7 @@ defmodule ZcashExplorerWeb.BlockChainInfoLive do
         Sapling pool
       </dt>
       <dd class="mt-1 text-3xl font-semibold text-gray-900 dark:text-white">
-          <%= sapling_value(@blockchain_info["valuePools"]) %> <%= currency %>
+          <%= sapling_value(@blockchain_info["valuePools"]) %> <%= currency(@blockchain_info) %>
       </dd>
     </div>
 
@@ -59,7 +57,7 @@ defmodule ZcashExplorerWeb.BlockChainInfoLive do
       Orchard pool
     </dt>
     <dd class="mt-1 text-3xl font-semibold text-gray-900 dark:text-white">
-        <%= orchard_value(@blockchain_info["valuePools"]) %> <%= currency %>
+        <%= orchard_value(@blockchain_info["valuePools"]) %> <%= currency(@blockchain_info) %>
     </dd>
     </div>
 
@@ -114,5 +112,9 @@ defmodule ZcashExplorerWeb.BlockChainInfoLive do
   defp get_value_pools(value_pools) do
     Enum.map(value_pools, fn %{"id" => name, "chainValue" => value} -> {name, value} end)
     |> Map.new()
+  end
+
+  defp currency(blockchain_info) do
+    if(blockchain_info["chain"] == "main", do: "ZEC", else: "TAZ")
   end
 end

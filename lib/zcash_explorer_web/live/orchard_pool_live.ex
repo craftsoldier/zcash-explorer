@@ -3,12 +3,10 @@ defmodule ZcashExplorerWeb.OrchardPoolLive do
   import Phoenix.Component
   @impl true
   def render(assigns) do
-    currency = if(assigns.blockchain_info["chain"] == "main", do: "ZEC", else: "TAZ")
-
     ~H"""
     <p class="text-2xl font-semibold text-gray-900 dark:dark:bg-slate-800 dark:text-slate-100">
     <%= if @blockchain_info do %>
-    <%= orchard_value(@blockchain_info["valuePools"]) %> <%= currency %>
+    <%= orchard_value(@blockchain_info["valuePools"]) %> <%= currency(@blockchain_info) %>
     <% else %>
     loading...
     <% end %>
@@ -43,5 +41,9 @@ defmodule ZcashExplorerWeb.OrchardPoolLive do
   defp get_value_pools(value_pools) do
     Enum.map(value_pools, fn %{"id" => name, "chainValue" => value} -> {name, value} end)
     |> Map.new()
+  end
+
+  defp currency(blockchain_info) do
+    if(blockchain_info["chain"] == "main", do: "ZEC", else: "TAZ")
   end
 end
