@@ -15,10 +15,10 @@ defmodule ZcashExplorerWeb.NetworkSolpsLive do
     if connected?(socket), do: Process.send_after(self(), :update, 30000)
 
     case Cachex.get(:app_cache, "networksolps") do
-      {:ok, info} ->
+      {:ok, info} when not is_nil(info) ->
         {:ok, assign(socket, :networksolps, info)}
 
-      {:error, _reason} ->
+      _ ->
         {:ok, assign(socket, :networksolps, "loading...")}
     end
   end

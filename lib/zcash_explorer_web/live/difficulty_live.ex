@@ -15,10 +15,10 @@ defmodule ZcashExplorerWeb.DifficultyLive do
     if connected?(socket), do: Process.send_after(self(), :update, 5000)
 
     case Cachex.get(:app_cache, "metrics") do
-      {:ok, info} ->
+      {:ok, info} when not is_nil(info) ->
         {:ok, assign(socket, :difficulty, info["difficulty"])}
 
-      {:error, _reason} ->
+      _ ->
         {:ok, assign(socket, :difficulty, "loading...")}
     end
   end

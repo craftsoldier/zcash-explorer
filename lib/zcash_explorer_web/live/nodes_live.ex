@@ -38,10 +38,10 @@ defmodule ZcashExplorerWeb.NodesLive do
     if connected?(socket), do: Process.send_after(self(), :update, 5000)
 
     case Cachex.get(:app_cache, "zcash_nodes") do
-      {:ok, zcash_nodes} ->
+      {:ok, zcash_nodes} when not is_nil(zcash_nodes) ->
         {:ok, assign(socket, :zcash_nodes, zcash_nodes)}
 
-      {:error, _reason} ->
+      _ ->
         {:ok, assign(socket, :zcash_nodes, "loading...")}
     end
   end

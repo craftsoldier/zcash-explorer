@@ -90,7 +90,7 @@ defmodule ZcashExplorerWeb.RecentTransactionsLive do
     if connected?(socket), do: Process.send_after(self(), :update, 1000)
 
     case Cachex.get(:app_cache, "transaction_cache") do
-      {:ok, info} ->
+      {:ok, info} when not is_nil(info) ->
         {:ok, %{"chain" => chain}} = Cachex.get(:app_cache, "metrics")
 
         {:ok,
@@ -99,8 +99,8 @@ defmodule ZcashExplorerWeb.RecentTransactionsLive do
            chain: chain
          )}
 
-      {:error, _reason} ->
-        {:ok, assign(socket, :transaction_cache, "loading...")}
+      _ ->
+        {:ok, assign(socket, transaction_cache: [], chain: nil)}
     end
   end
 
@@ -108,6 +108,6 @@ defmodule ZcashExplorerWeb.RecentTransactionsLive do
   def handle_info(:update, socket) do
     Process.send_after(self(), :update, 1000)
     {:ok, info} = Cachex.get(:app_cache, "transaction_cache")
-    {:noreply, assign(socket, :transaction_cache, info)}
+    {:noreply, assign(socket, :transaction_cache, info || [])}
   end
 end

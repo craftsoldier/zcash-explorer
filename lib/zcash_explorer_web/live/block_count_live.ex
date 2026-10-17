@@ -16,10 +16,10 @@ defmodule ZcashExplorerWeb.BlockCountLive do
     if connected?(socket), do: Process.send_after(self(), :update, 15000)
 
     case Cachex.get(:app_cache, "metrics") do
-      {:ok, info} ->
+      {:ok, info} when not is_nil(info) ->
         {:ok, assign(socket, :block_count, info["blocks"])}
 
-      {:error, _reason} ->
+      _ ->
         {:ok, assign(socket, :block_count, "loading...")}
     end
   end

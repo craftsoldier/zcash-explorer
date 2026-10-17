@@ -17,12 +17,12 @@ defmodule ZcashExplorerWeb.OrchardPoolLive do
     if connected?(socket), do: Process.send_after(self(), :update, 15000)
 
     case Cachex.get(:app_cache, "metrics") do
-      {:ok, info} ->
+      {:ok, info} when not is_nil(info) ->
         {:ok, %{"build" => build}} = Cachex.get(:app_cache, "info")
         info = Map.put(info, "build", build)
         {:ok, assign(socket, :blockchain_info, info)}
 
-      {:error, _reason} ->
+      _ ->
         {:ok, assign(socket, :blockchain_info, "loading...")}
     end
   end

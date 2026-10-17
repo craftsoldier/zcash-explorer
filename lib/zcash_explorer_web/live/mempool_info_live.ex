@@ -15,10 +15,10 @@ defmodule ZcashExplorerWeb.MempoolInfoLive do
     if connected?(socket), do: Process.send_after(self(), :update, 1000)
 
     case Cachex.get(:app_cache, "mempool_info") do
-      {:ok, info} ->
+      {:ok, info} when not is_nil(info) ->
         {:ok, assign(socket, :mempool_info, info["size"])}
 
-      {:error, _reason} ->
+      _ ->
         {:ok, assign(socket, :mempool_info, "loading...")}
     end
   end
