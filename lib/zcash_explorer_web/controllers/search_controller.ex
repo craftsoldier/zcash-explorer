@@ -26,10 +26,11 @@ defmodule ZcashExplorerWeb.SearchController do
       end)
 
     # order in which the tasks are above defined matters
-    {:ok, block_resp} = Enum.at(results, 0)
-    {:ok, tx_resp} = Enum.at(results, 1)
-    {:ok, tadd_resp} = Enum.at(results, 2)
-    {:ok, zadd_resp} = Enum.at(results, 3)
+    # keep the {:ok, _} / {:error, _} tuples; the is_valid_* checks below handle both
+    block_resp = Enum.at(results, 0)
+    tx_resp = Enum.at(results, 1)
+    tadd_resp = Enum.at(results, 2)
+    zadd_resp = Enum.at(results, 3)
 
     IO.inspect(block_resp)
     IO.inspect(tx_resp)
@@ -88,6 +89,10 @@ defmodule ZcashExplorerWeb.SearchController do
     false
   end
 
+  def is_valid_taddr?(_resp) do
+    false
+  end
+
   def is_valid_zaddr?({:ok, %{"isvalid" => true, "type" => "sprout"}}) do
     true
   end
@@ -105,6 +110,10 @@ defmodule ZcashExplorerWeb.SearchController do
   end
 
   def is_valid_zaddr?({:ok, %{"isvalid" => true, "address_type" => "unified"}}) do
+    false
+  end
+
+  def is_valid_zaddr?(_resp) do
     false
   end
 
