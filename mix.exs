@@ -45,7 +45,7 @@ defmodule ZcashExplorer.MixProject do
       {:phoenix_live_dashboard, "~> 0.9.1"},
       {:telemetry_metrics, "~> 1.2"},
       {:telemetry_poller, "~> 1.0"},
-      {:gettext, "~> 0.11"},
+      {:gettext, "~> 1.0"},
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
       {:httpoison, "~> 3.0"},
