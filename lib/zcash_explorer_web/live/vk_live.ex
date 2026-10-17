@@ -5,7 +5,7 @@ defmodule ZcashExplorerWeb.VkLive do
   def render(%{message: %{"txs" => []}} = assigns) do
     ~H"""
     <div id="clogsholder" class="text-green-400 font-mono break-all overscroll-auto overflow-auto mx-16 h-28  min-h-full border-solid  rounded-md border-opacity-25 shadow-inner border-4 border-light-blue-500 " phx-hook="VkContainerLog">
-    <div id="clogs min-h-full">
+    <div id="clogs min-h-full" class="whitespace-pre-wrap">
     <%= @message["message"] %>
     </div>
     </div>
@@ -80,7 +80,7 @@ defmodule ZcashExplorerWeb.VkLive do
     end
 
     cmd = MuonTrap.cmd("docker", ["logs", socket.assigns.message["container_id"]])
-    logs = elem(cmd, 0) |> Phoenix.HTML.Format.text_to_html()
+    logs = elem(cmd, 0)
 
     {:noreply,
      assign(socket, :message, %{
