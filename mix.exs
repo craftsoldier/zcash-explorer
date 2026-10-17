@@ -48,7 +48,7 @@ defmodule ZcashExplorer.MixProject do
       {:plug_cowboy, "~> 2.0"},
       {:httpoison, "~> 3.0"},
       {:observer_cli, "~> 2.0"},
-      {:cachex, "~> 3.3"},
+      {:cachex, "~> 4.0"},
       {:phoenix_live_view, "~> 0.17.9"},
       {:floki, ">= 0.27.0", only: :test},
       {:timex, "~> 3.0"},
