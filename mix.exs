@@ -37,7 +37,6 @@ defmodule ZcashExplorer.MixProject do
       {:phoenix_ecto, "~> 4.4"},
       {:ecto_sql, "~> 3.14"},
       {:postgrex, ">= 0.0.0"},
-      {:ecto_psql_extras, "~> 0.8.8"},
       {:phoenix_html, "~> 4.0"},
       {:phoenix_html_helpers, "~> 1.0"},
       {:phoenix_view, "~> 2.0"},
@@ -49,13 +48,10 @@ defmodule ZcashExplorer.MixProject do
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
       {:httpoison, "~> 3.0"},
-      {:observer_cli, "~> 2.0"},
       {:cachex, "~> 4.0"},
       {:phoenix_live_view, "~> 1.2.12"},
-      {:floki, ">= 0.27.0", only: :test},
       {:sizeable, "~> 1.0"},
       {:eqrcode, "~> 0.2"},
-      {:contex, "~> 0.5.0"},
       {:muontrap, "~> 2.0"}
     ]
   end
