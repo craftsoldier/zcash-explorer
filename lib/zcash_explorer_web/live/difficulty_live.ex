@@ -5,7 +5,7 @@ defmodule ZcashExplorerWeb.DifficultyLive do
   def render(assigns) do
     ~H"""
     <p class="text-2xl font-semibold text-gray-900 dark:dark:bg-slate-800 dark:text-slate-100">
-    <%= Float.ceil(@difficulty,6) %>
+    <%= if @difficulty, do: Float.ceil(@difficulty, 6), else: "loading..." %>
     </p>
     """
   end
@@ -14,19 +14,14 @@ defmodule ZcashExplorerWeb.DifficultyLive do
   def mount(_params, _session, socket) do
     if connected?(socket), do: Process.send_after(self(), :update, 5000)
 
-    case Cachex.get(:app_cache, "metrics") do
-      {:ok, info} when not is_nil(info) ->
-        {:ok, assign(socket, :difficulty, info["difficulty"])}
-
-      _ ->
-        {:ok, assign(socket, :difficulty, "loading...")}
-    end
+    {:ok, info} = Cachex.get(:app_cache, "metrics")
+    {:ok, assign(socket, :difficulty, info && info["difficulty"])}
   end
 
   @impl true
   def handle_info(:update, socket) do
     Process.send_after(self(), :update, 5000)
     {:ok, info} = Cachex.get(:app_cache, "metrics")
-    {:noreply, assign(socket, :difficulty, info["difficulty"])}
+    {:noreply, assign(socket, :difficulty, info && info["difficulty"])}
   end
 end

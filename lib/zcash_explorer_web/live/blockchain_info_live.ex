@@ -6,6 +6,7 @@ defmodule ZcashExplorerWeb.BlockChainInfoLive do
     currency = if(assigns.blockchain_info["chain"] == "main", do: "ZEC", else: "TAZ")
 
     ~H"""
+    <%= if @blockchain_info do %>
     <div>
     <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
     <div class="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6 dark:bg-gray-800">
@@ -72,8 +73,9 @@ defmodule ZcashExplorerWeb.BlockChainInfoLive do
     </div>
     </dl>
     </div>
-
-
+    <% else %>
+    <p>loading...</p>
+    <% end %>
     """
   end
 
@@ -81,24 +83,20 @@ defmodule ZcashExplorerWeb.BlockChainInfoLive do
   def mount(_params, _session, socket) do
     if connected?(socket), do: Process.send_after(self(), :update, 5000)
 
-    case Cachex.get(:app_cache, "metrics") do
-      {:ok, info} when not is_nil(info) ->
-        {:ok, %{"build" => build}} = Cachex.get(:app_cache, "info")
-        info = Map.put(info, "build", build)
-        {:ok, assign(socket, :blockchain_info, info)}
-
-      _ ->
-        {:ok, assign(socket, :blockchain_info, "loading...")}
-    end
+    {:ok, assign(socket, :blockchain_info, load_blockchain_info())}
   end
 
   @impl true
   def handle_info(:update, socket) do
     Process.send_after(self(), :update, 15000)
+    {:noreply, assign(socket, :blockchain_info, load_blockchain_info())}
+  end
+
+  # nil until both the metrics and info keys have been warmed
+  defp load_blockchain_info do
     {:ok, info} = Cachex.get(:app_cache, "metrics")
-    {:ok, %{"build" => build}} = Cachex.get(:app_cache, "info")
-    info = Map.put(info, "build", build)
-    {:noreply, assign(socket, :blockchain_info, info)}
+    {:ok, node_info} = Cachex.get(:app_cache, "info")
+    if info && node_info, do: Map.put(info, "build", node_info["build"])
   end
 
   defp sprout_value(value_pools) do

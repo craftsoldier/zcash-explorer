@@ -47,19 +47,14 @@ defmodule ZcashExplorerWeb.RawMempoolLive do
   def mount(_params, _session, socket) do
     if connected?(socket), do: Process.send_after(self(), :update, 5000)
 
-    case Cachex.get(:app_cache, "raw_mempool") do
-      {:ok, mempool} when not is_nil(mempool) ->
-        {:ok, assign(socket, :raw_mempool, mempool)}
-
-      _ ->
-        {:ok, assign(socket, :raw_mempool, "loading...")}
-    end
+    {:ok, mempool} = Cachex.get(:app_cache, "raw_mempool")
+    {:ok, assign(socket, :raw_mempool, mempool || [])}
   end
 
   @impl true
   def handle_info(:update, socket) do
     Process.send_after(self(), :update, 5000)
     {:ok, mempool} = Cachex.get(:app_cache, "raw_mempool")
-    {:noreply, assign(socket, :raw_mempool, mempool)}
+    {:noreply, assign(socket, :raw_mempool, mempool || [])}
   end
 end
