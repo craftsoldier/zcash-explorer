@@ -14,6 +14,7 @@ defmodule ZcashExplorerWeb.RecentTransactionsLive do
                 <th scope="col" class="px-6 py-3">Public Output ( <%= case @chain do %>
                 <% "main" -> %>
                   ZEC
+                <% nil -> %>
                 <% _ -> %>
                   TAZ
               <% end %>  )</th>
@@ -108,6 +109,7 @@ defmodule ZcashExplorerWeb.RecentTransactionsLive do
   def handle_info(:update, socket) do
     Process.send_after(self(), :update, 1000)
     {:ok, info} = Cachex.get(:app_cache, "transaction_cache")
-    {:noreply, assign(socket, :transaction_cache, info || [])}
+    {:ok, metrics} = Cachex.get(:app_cache, "metrics")
+    {:noreply, assign(socket, transaction_cache: info || [], chain: metrics && metrics["chain"])}
   end
 end
