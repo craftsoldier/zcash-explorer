@@ -33,7 +33,7 @@ defmodule ZcashExplorer.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.6"},
+      {:phoenix, "~> 1.6.16"},
       {:phoenix_ecto, "~> 4.4"},
       {:ecto_sql, "~> 3.11"},
       {:postgrex, ">= 0.0.0"},
