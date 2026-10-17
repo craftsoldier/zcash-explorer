@@ -33,13 +33,14 @@ defmodule ZcashExplorer.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.6.16"},
+      {:phoenix, "~> 1.8"},
       {:phoenix_ecto, "~> 4.4"},
       {:ecto_sql, "~> 3.14"},
       {:postgrex, ">= 0.0.0"},
       {:ecto_psql_extras, "~> 0.8.8"},
       {:phoenix_html, "~> 4.0"},
       {:phoenix_html_helpers, "~> 1.0"},
+      {:phoenix_view, "~> 2.0"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:phoenix_live_dashboard, "~> 0.8.7"},
       {:telemetry_metrics, "~> 0.6.1"},
@@ -50,7 +51,7 @@ defmodule ZcashExplorer.MixProject do
       {:httpoison, "~> 3.0"},
       {:observer_cli, "~> 2.0"},
       {:cachex, "~> 4.0"},
-      {:phoenix_live_view, "~> 0.20.17"},
+      {:phoenix_live_view, "~> 1.0.12"},
       {:floki, ">= 0.27.0", only: :test},
       {:timex, "~> 3.0"},
       {:sizeable, "~> 1.0"},
