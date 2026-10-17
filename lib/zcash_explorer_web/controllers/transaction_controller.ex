@@ -10,7 +10,7 @@ defmodule ZcashExplorerWeb.TransactionController do
 
   def get_raw_transaction(conn, %{"txid" => txid}) do
     {:ok, tx} = Zcashex.getrawtransaction(txid, 1)
-    data = Poison.encode!(tx, pretty: true)
+    data = Jason.encode!(tx, pretty: true)
 
     conn
     |> put_resp_content_type("application/json")

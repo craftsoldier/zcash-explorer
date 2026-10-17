@@ -47,16 +47,15 @@ defmodule ZcashExplorer.MixProject do
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
       {:httpoison, "~> 3.0"},
-      {:poison, "~> 3.1"},
-      {:observer_cli, "~> 1.6"},
+      {:observer_cli, "~> 2.0"},
       {:cachex, "~> 3.3"},
       {:phoenix_live_view, "~> 0.17.9"},
       {:floki, ">= 0.27.0", only: :test},
       {:timex, "~> 3.0"},
       {:sizeable, "~> 1.0"},
-      {:eqrcode, "~> 0.1.8"},
-      {:contex, "~> 0.3.0"},
-      {:muontrap, "~> 0.6.1"}
+      {:eqrcode, "~> 0.2"},
+      {:contex, "~> 0.5.0"},
+      {:muontrap, "~> 2.0"}
     ]
   end
 

@@ -13,7 +13,7 @@ defmodule Zcashex.Client do
     url = "http://#{config[:zcashd_hostname]}:#{config[:zcashd_port]}"
 
     body =
-      Poison.encode!(%{
+      Jason.encode!(%{
         "jsonrpc" => "1.0",
         "id" => "zcashex",
         "method" => method,
@@ -35,7 +35,7 @@ defmodule Zcashex.Client do
   # zcashd returns HTTP 500 with a JSON-RPC error body for failed calls,
   # so the status code isn't checked here.
   defp decode(body) do
-    case Poison.decode(body) do
+    case Jason.decode(body) do
       {:ok, %{"error" => nil, "result" => result}} -> {:ok, result}
       {:ok, %{"error" => %{"message" => message}}} -> {:error, message}
       _ -> {:error, "unexpected response from node"}
